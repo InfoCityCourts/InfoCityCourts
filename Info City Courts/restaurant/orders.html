@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Restaurant Dashboard</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .orders-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .order-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .order-id {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .order-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .order-info h4, .customer-info h4 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .order-info p, .customer-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .order-items {
+            margin-bottom: 15px;
+        }
+        .order-items h4 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .order-total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .btn-accept, .btn-reject, .btn-complete {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        .btn-accept {
+            background: #28a745;
+            color: white;
+        }
+        .btn-accept:hover {
+            background: #218838;
+        }
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-reject:hover {
+            background: #c82333;
+        }
+        .btn-complete {
+            background: #007bff;
+            color: white;
+        }
+        .btn-complete:hover {
+            background: #0056b3;
+        }
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .filter-btn.active {
+            background: #ff6b35;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="../img/logo.png" alt="INFO CITY COURTS Logo">
+                <h1>INFO CITY COURTS</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="orders.html" class="active">Orders</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="../index.html">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="orders-container">
+        <div class="orders-header">
+            <h1>Order Management</h1>
+            <p>Accept, reject, and manage customer orders</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All Orders</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="accepted">Accepted</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+
+        <div id="ordersList">
+            <!-- Sample orders -->
+            <div class="order-item">
+                <div class="order-header">
+                    <span class="order-id">Order #12345</span>
+                    <span class="order-status status-pending">Pending</span>
+                </div>
+                <div class="order-details">
+                    <div class="customer-info">
+                        <h4>Customer Details</h4>
+                        <p><strong>Name:</strong> John Doe</p>
+                        <p><strong>Phone:</strong> (555) 123-4567</p>
+                        <p><strong>Address:</strong> 123 Main St, City, State 12345</p>
+                    </div>
+                    <div class="order-info">
+                        <h4>Order Details</h4>
+                        <p><strong>Order Time:</strong> 2024-01-15 12:30 PM</p>
+                        <p><strong>Delivery Time:</strong> 2024-01-15 01:00 PM</p>
+                        <p><strong>Payment:</strong> Credit Card</p>
+                    </div>
+                </div>
+                <div class="order-items">
+                    <h4>Items</h4>
+                    <div class="item">
+                        <span>Margherita Pizza x 2</span>
+                        <span>$26.98</span>
+                    </div>
+                    <div class="item">
+                        <span>Coke x 1</span>
+                        <span>$2.99</span>
+                    </div>
+                </div>
+                <div class="order-total">Total: $29.97</div>
+                <div class="order-actions">
+                    <button class="btn-accept" onclick="acceptOrder(12345)">Accept Order</button>
+                    <button class="btn-reject" onclick="rejectOrder(12345)">Reject Order</button>
+                </div>
+            </div>
+
+            <div class="order-item">
+                <div class="order-header">
+                    <span class="order-id">Order #12346</span>
+                    <span class="order-status status-accepted">Accepted</span>
+                </div>
+                <div class="order-details">
+                    <div class="customer-info">
+                        <h4>Customer Details</h4>
+                        <p><strong>Name:</strong> Jane Smith</p>
+                        <p><strong>Phone:</strong> (555) 987-6543</p>
+                        <p><strong>Address:</strong> 456 Oak Ave, City, State 12345</p>
+                    </div>
+                    <div class="order-info">
+                        <h4>Order Details</h4>
+                        <p><strong>Order Time:</strong> 2024-01-15 11:45 AM</p>
+                        <p><strong>Delivery Time:</strong> 2024-01-15 12:15 PM</p>
+                        <p><strong>Payment:</strong> Cash on Delivery</p>
+                    </div>
+                </div>
+                <div class="order-items">
+                    <h4>Items</h4>
+                    <div class="item">
+                        <span>Chicken Burger x 1</span>
+                        <span>$10.99</span>
+                    </div>
+                    <div class="item">
+                        <span>French Fries x 1</span>
+                        <span>$4.99</span>
+                    </div>
+                </div>
+                <div class="order-total">Total: $15.98</div>
+                <div class="order-actions">
+                    <button class="btn-complete" onclick="completeOrder(12346)">Mark as Completed</button>
+                </div>
+            </div>
+
+            <div class="order-item">
+                <div class="order-header">
+                    <span class="order-id">Order #12344</span>
+                    <span class="order-status status-rejected">Rejected</span>
+                </div>
+                <div class="order-details">
+                    <div class="customer-info">
+                        <h4>Customer Details</h4>
+                        <p><strong>Name:</strong> Bob Johnson</p>
+                        <p><strong>Phone:</strong> (555) 456-7890</p>
+                        <p><strong>Address:</strong> 789 Pine St, City, State 12345</p>
+                    </div>
+                    <div class="order-info">
+                        <h4>Order Details</h4>
+                        <p><strong>Order Time:</strong> 2024-01-14 06:30 PM</p>
+                        <p><strong>Reason:</strong> Item out of stock</p>
+                        <p><strong>Payment:</strong> Refunded</p>
+                    </div>
+                </div>
+                <div class="order-items">
+                    <h4>Items</h4>
+                    <div class="item">
+                        <span>Special Pasta x 1</span>
+                        <span>$14.99</span>
+                    </div>
+                </div>
+                <div class="order-total">Total: $14.99</div>
+                <div class="order-actions">
+                    <span>Order Rejected</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function acceptOrder(orderId) {
+            if (confirm(`Accept order #${orderId}?`)) {
+                const orderItem = document.querySelector(`[onclick="acceptOrder(${orderId})"]`).closest('.order-item');
+                const statusElement = orderItem.querySelector('.order-status');
+                statusElement.textContent = 'Accepted';
+                statusElement.className = 'order-status status-accepted';
+                
+                const actionsDiv = orderItem.querySelector('.order-actions');
+                actionsDiv.innerHTML = '<button class="btn-complete" onclick="completeOrder(' + orderId + ')">Mark as Completed</button>';
+                
+                alert(`Order #${orderId} accepted!`);
+                // In a real app, this would update the database
+            }
+        }
+
+        function rejectOrder(orderId) {
+            const reason = prompt('Reason for rejection:');
+            if (reason) {
+                const orderItem = document.querySelector(`[onclick="rejectOrder(${orderId})"]`).closest('.order-item');
+                const statusElement = orderItem.querySelector('.order-status');
+                statusElement.textContent = 'Rejected';
+                statusElement.className = 'order-status status-rejected';
+                
+                const actionsDiv = orderItem.querySelector('.order-actions');
+                actionsDiv.innerHTML = '<span>Order Rejected - ' + reason + '</span>';
+                
+                alert(`Order #${orderId} rejected. Reason: ${reason}`);
+                // In a real app, this would update the database
+            }
+        }
+
+        function completeOrder(orderId) {
+            if (confirm(`Mark order #${orderId} as completed?`)) {
+                const orderItem = document.querySelector(`[onclick="completeOrder(${orderId})"]`).closest('.order-item');
+                const statusElement = orderItem.querySelector('.order-status');
+                statusElement.textContent = 'Completed';
+                statusElement.className = 'order-status';
+                statusElement.style.background = '#e9ecef';
+                statusElement.style.color = '#495057';
+                
+                const actionsDiv = orderItem.querySelector('.order-actions');
+                actionsDiv.innerHTML = '<span>Order Completed</span>';
+                
+                alert(`Order #${orderId} marked as completed!`);
+                // In a real app, this would update the database
+            }
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // In a real app, this would filter the orders based on status
+                alert(`Filtering by: ${this.dataset.filter}`);
+            });
+        });
+    </script>
+</body>
+</html>
